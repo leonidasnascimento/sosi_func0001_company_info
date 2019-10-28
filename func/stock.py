@@ -12,6 +12,7 @@ class stock_cvm_code():
     def get_list(self) -> []:
         
         return_lst = []
+        aux_list = []
         headers = {
             'content-type': "application/json",
             'cache-control': "no-cache"
@@ -28,7 +29,14 @@ class stock_cvm_code():
             cvm_obj = CVM("", "")
             cvm_obj.__dict__ = item
 
-            return_lst.append(cvm_obj)
+            try:
+                if aux_list.index(cvm_obj.cvm_code) > 0:
+                    pass
+                pass
+            except ValueError:
+                return_lst.append(cvm_obj)
+                aux_list.append(cvm_obj.cvm_code)
+                pass               
 
         return return_lst
     pass

@@ -10,6 +10,7 @@ from typing import List
 from configuration_manager.reader import reader
 from .crawler import company_info
 from .stock import stock_cvm_code
+from .models.company_info import Company
 
 SETTINGS_FILE_PATH = pathlib.Path(
     __file__).parent.parent.__str__() + "//local.settings.json"
@@ -36,18 +37,22 @@ def main(SosiFunc0001CompanyInfo: func.TimerRequest) -> None:
         logging.info("Getting list of CVM codes")
 
         list_cvm = stock_cvm_code(service_url_cvm_code).get_list()
-        logging.info("{} acquired from service...".format(len(list_cvm_code)))
+        logging.info("{} acquired from service...".format(len(list_cvm)))
 
 
-        if list_cvm or len(list_cvm) == 0:
+        if len(list_cvm) == 0:
             logging.warning("No CVM code to process!")
         else:
             # Crawling
             logging.info("Getting stock list. It may take a while...")  
             
             for cvm in list_cvm:
-                obj = company_info().get_info(cvm)
-                comp_json_obj: str = json.dumps(obj)
+                obj: Company = company_info().get_info(cvm)
+                
+                if obj: 
+                    continue
+
+                comp_json_obj: str = json.dumps(obj.__dict__)
 
                 logging.info("Company information acquired for '{}'".format(cvm.cvm_code))
 
