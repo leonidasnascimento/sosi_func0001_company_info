@@ -2,10 +2,10 @@
   "scriptFile": "__init__.py",
   "bindings": [
     {
-      "name": "sosi_func0001_company_info",
+      "name": "SosiFunc0001CompanyInfo",
       "type": "timerTrigger",
       "direction": "in",
-      "schedule": "0 */5 * * * *"
+      "schedule": "0 * * * * *"
     }
   ]
 }

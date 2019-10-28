@@ -14,7 +14,7 @@ from .stock import stock_cvm_code
 SETTINGS_FILE_PATH = pathlib.Path(
     __file__).parent.parent.__str__() + "//local.settings.json"
 
-def main(sosi_func0001_company_info: func.TimerRequest) -> None:
+def main(SosiFunc0001CompanyInfo: func.TimerRequest) -> None:
     utc_timestamp = datetime.datetime.utcnow().replace(
         tzinfo=datetime.timezone.utc).isoformat()
 
@@ -35,19 +35,23 @@ def main(sosi_func0001_company_info: func.TimerRequest) -> None:
         logging.info("'sosi_func0001_company_info' has begun")
         logging.info("Getting list of CVM codes")
 
-        list_cvm_code = stock_cvm_code(service_url_cvm_code).get_list()
+        list_cvm = stock_cvm_code(service_url_cvm_code).get_list()
+        logging.info("{} acquired from service...".format(len(list_cvm_code)))
 
-        if list_cvm_code or len(list_cvm_code) == 0:
-            logging.info("No CVM code to process!")
+
+        if list_cvm or len(list_cvm) == 0:
+            logging.warning("No CVM code to process!")
         else:
             # Crawling
             logging.info("Getting stock list. It may take a while...")  
             
-            for cvm_code in list_cvm_code:
-                comp_json_obj = company_info().get_info(cvm_code)
-                logging.info("Company information acquired for '{}'".format(cvm_code))
+            for cvm in list_cvm:
+                obj = company_info().get_info(cvm)
+                comp_json_obj: str = json.dumps(obj)
 
-                threading.Thread(target=invoke_url, args=(cvm_code, service_url_post_company_info, comp_json_obj)).start()
+                logging.info("Company information acquired for '{}'".format(cvm.cvm_code))
+
+                threading.Thread(target=invoke_url, args=(cvm.cvm_code, service_url_post_company_info, comp_json_obj)).start()
             pass
 
         logging.info("Timer job is done. Waiting for the next execution time")
