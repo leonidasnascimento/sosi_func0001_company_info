@@ -65,6 +65,9 @@ def main(SosiFunc0001CompanyInfo: func.TimerRequest) -> None:
     pass
 
 def invoke_url(cvm_code, url, json):
+    if url == "":
+        return
+    
     headers = {
         'content-type': "application/json",
         'cache-control': "no-cache"
