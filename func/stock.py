@@ -1,6 +1,8 @@
 import json
 import requests
+from typing import List
 from .models.cvm import CVM
+
 
 class stock_cvm_code():
     service_url: str = ""
@@ -9,9 +11,9 @@ class stock_cvm_code():
         self.service_url = url
         pass
 
-    def get_list(self) -> []:
+    def get_list(self) -> List[CVM]:
         
-        return_lst = []
+        return_lst: List[CVM] = []
         aux_list = []
         headers = {
             'content-type': "application/json",

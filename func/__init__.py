@@ -11,6 +11,7 @@ from configuration_manager.reader import reader
 from .crawler import company_info
 from .stock import stock_cvm_code
 from .models.company_info import Company
+from .models.cvm import CVM
 
 SETTINGS_FILE_PATH = pathlib.Path(
     __file__).parent.parent.__str__() + "//local.settings.json"
@@ -21,7 +22,7 @@ def main(SosiFunc0001CompanyInfo: func.TimerRequest) -> None:
 
     try:
         config_obj: reader = reader(SETTINGS_FILE_PATH, 'Values')
-        list_cvm_code: [] = None
+        list_cvm: List[CVM] = []
         service_url_cvm_code: str = config_obj.get_value("service_url_cvm_code")
         service_url_post_company_info: str = config_obj.get_value("service_url_post_company_info")
 
@@ -51,7 +52,7 @@ def main(SosiFunc0001CompanyInfo: func.TimerRequest) -> None:
 
                 comp_json_obj: str = json.dumps(obj.__dict__)
 
-                logging.info("Company information acquired for '{}'".format(cvm.cvm_code))
+                logging.info("Posting details for '{}'".format(cvm.cvm_code))
                 threading.Thread(target=invoke_url, args=(cvm.cvm_code, service_url_post_company_info, comp_json_obj)).start()
             pass
 
