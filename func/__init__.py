@@ -39,23 +39,19 @@ def main(SosiFunc0001CompanyInfo: func.TimerRequest) -> None:
         list_cvm = stock_cvm_code(service_url_cvm_code).get_list()
         logging.info("{} acquired from service...".format(len(list_cvm)))
 
-
         if len(list_cvm) == 0:
             logging.warning("No CVM code to process!")
-        else:
-            # Crawling
-            logging.info("Getting stock list. It may take a while...")  
-            
+        else:            
             for cvm in list_cvm:
-                obj: Company = company_info().get_info(cvm)
+                logging.info("Acquiring details for {}".format(cvm.cvm_code)) 
                 
-                if obj: 
+                obj: Company = company_info().get_info(cvm)
+                if not obj: 
                     continue
 
                 comp_json_obj: str = json.dumps(obj.__dict__)
 
                 logging.info("Company information acquired for '{}'".format(cvm.cvm_code))
-
                 threading.Thread(target=invoke_url, args=(cvm.cvm_code, service_url_post_company_info, comp_json_obj)).start()
             pass
 
