@@ -47,7 +47,9 @@ def main(SosiFunc0001CompanyInfo: func.TimerRequest) -> None:
             process_list: List[Process] = []
             
             for cvm in list_cvm:
-                process_list.append(Process(target=execute_crawling_asyc, args=(cvm, service_url_post_company_info))) 
+                p = Process(target=execute_crawling_asyc, args=(cvm, service_url_post_company_info))
+                process_list.append(p) 
+                p.start()
 
             for p in process_list:
                 if(p.is_alive()):
