@@ -5,7 +5,7 @@
       "name": "SosiFunc0001CompanyInfo",
       "type": "timerTrigger",
       "direction": "in",
-      "schedule": ""
+      "schedule": "0 * * * * *"
     }
   ]
 }
