@@ -6,7 +6,7 @@ import requests
 import pathlib
 import threading
 
-from multiprocessing import Process
+from multiprocessing.pool import ThreadPool
 from typing import List
 from configuration_manager.reader import reader
 from .crawler import company_info
@@ -39,21 +39,18 @@ def main(SosiFunc0001CompanyInfo: func.TimerRequest) -> None:
         logging.info("Getting list of CVM codes")
 
         list_cvm = stock_cvm_code(service_url_cvm_code).get_list()
-        logging.info("{} acquired from service...".format(len(list_cvm)))
+        logging.info("Async processing {} companies got from service. This will take a while".format(len(list_cvm)))
 
         if len(list_cvm) == 0:
             logging.warning("No CVM code to process!")
         else:            
-            process_list: List[Process] = []
-            
-            for cvm in list_cvm:
-                p = Process(target=execute_crawling_asyc, args=(cvm, service_url_post_company_info))
-                process_list.append(p) 
-                p.start()
+            pool = ThreadPool(5)
 
-            for p in process_list:
-                if(p.is_alive()):
-                    p.join()           
+            for cvm in list_cvm:            
+                pool.apply_async(func=execute_crawling_asyc, args=(cvm, service_url_post_company_info,))
+
+            pool.close()
+            pool.join()        
 
         logging.info("Timer job is done. Waiting for the next execution time")
         pass
